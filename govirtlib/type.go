@@ -11,7 +11,8 @@ type DomainInfo struct {
 }
 type CreateVmForm struct {
 	Hostname    string `json:"hostname"`
-	VmMac       string `json:"mac"`         // the mac addressA
+	VmMac       string `json:"mac"` // the mac addressA
+	Uuid        string `json:"uuid"`
 	VmIp        string `json:"ip"`          // the ip address of the virutal machine
 	CpuCount    int    `json:"cpucount"`    // cpucount
 	MemoryCount int    `json:"memorycount"` // in GB
