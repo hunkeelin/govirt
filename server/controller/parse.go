@@ -3,7 +3,6 @@ package controller
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io/ioutil"
 )
 
@@ -14,9 +13,6 @@ type ClusterInfo struct {
 	Storage     string
 }
 
-func fk() {
-	fmt.Println("fuck")
-}
 func parse(f string) (map[string]ClusterInfo, error) {
 	m := make(map[string]ClusterInfo)
 	b, err := ioutil.ReadFile(f)
