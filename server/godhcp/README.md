@@ -1,41 +1,62 @@
 ### Introduction ###
 isc-dhcp api. For host and network add/update
 
-### Security ###
-Can host via http or https
+## GET
 
-### Usage ###
-
-If you are querying the API. uses govirtlib.PostPayload and GetPayload
-
-- Method `GET`
 ```
 {
-    target: $target // host,network
+    target: $target
 }
     
 ```
-
-- `POST` `PATCH` `DELETE`
+### target = host ###
+Returns: 
 ```
-{
-    target: $target, // host,network
-    hostinfo: { // govirtlib.CreateVmForm relevant if target=host
-        Hostname:  string `json:"hostname"`
-        Mac:       string `json:"mac"`
-        Ip:        string `json:"ip"`
-        Leasetime: int    `json:"leasetime"`
-    },
-    network: { //govirtlib.Network relevant if target=network
-        Subnet:  string   `json:"subnet"`
-        Netmask: string   `json:"netmask"`
-        Dns:     []string `json:"dns"`
-        Router:  string   `json:"router"`
-        Iprange: []string `json:"iprange"`
-    },
+govirtlib.ReturnPayload {
+    HostInfos
+}
+```
+    
+### target = network ###
+Returns: 
+```
+govirtlib.ReturnPayload {
+    NetInfos
 }
 ```
 
-#### Todo ####
-- Post network add and update
-- Post network delete
+## POST
+```
+type PostPayload struct {
+    Domain        string
+    Target        string         `json:"target"`
+    VmForm        CreateVmForm   `json:"createvmform"`  // the object for the govirthost that contains vminfo to create the virtual machine :govirthost
+    //  Hostinfo      HostInfo       `json:"hostinfo"`      // the hostinfo to add to godhcp. :godhcp
+    Netinfo     Network  `json:"netinfo"` // when you want to add or delete network for. :godhcp
+}
+```
+### target = network ###
+Post the network you want to add. You must fill in a valid govirtlib.Network object before doing so. 
+Require fields:
+    - Netinfo
+
+### target = host ###
+Post the network you want to add. You must fill in a valid govirtlib.Network object before doing so. 
+Require fields:
+    - VmForm
+
+## PATCH
+same as POST but being able to update existing records. 
+
+## DELETE
+
+### target = network ###
+Delete the network 
+Require fields: 
+    - Netinfo.Subnet
+
+### target = host ###
+Delete the host 
+Require fields: 
+    - Domain 
+

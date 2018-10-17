@@ -2,7 +2,7 @@
 This is the govirthost.
 
 
-## GET ##
+## GET 
 ```
 { 
     "target": $item
@@ -46,7 +46,7 @@ type SI struct {
 }
 ```
 
-## POST ##
+## POST 
 ```
 type PostPayload struct {
     Domain        string         `json:"domain"` // the domain to action should apply to :govirthost
@@ -82,7 +82,7 @@ Require fields:
 - Target: The destination vmhost. 
 - Domain: the Vm you want to migrate. 
 
-## DELETE ##
+## DELETE 
 ```
 type PostPayload struct {
     Domain        string         `json:"domain"` // the domain to action should apply to :govirthost

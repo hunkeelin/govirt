@@ -28,7 +28,7 @@ func (c *Conn) del(w http.ResponseWriter, r *http.Request) error {
 			fmt.Println(err)
 			w.WriteHeader(500)
 		}
-	case "template":
+	case "image":
 		err := c.deltemplate(p.Target)
 		if err != nil {
 			fmt.Println(err)
