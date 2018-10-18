@@ -7,7 +7,7 @@ import(
     "github.com/hunkeelin/mtls/klinreq"
     "github.com/hunkeelin/govirt/govirtlib"
 )
-func SetImage(dest,image,hostname string) error {
+func (c *Conn) setimage(dest,image,hostname string) error {
     vm := govirtlib.CreateVmForm {
         Image: image,
         Hostname: hostname,
@@ -21,7 +21,9 @@ func SetImage(dest,image,hostname string) error {
         Dport: klinutils.Stringtoport("storagehost"),
         Method: "POST",
         Payload: p,
-        Http: true,
+        TrustBytes: c.tb,
+        CertBytes: c.cb,
+        KeyBytes: c.kb,
     }
     resp, err := klinreq.SendPayload(i)
     if err != nil {
@@ -38,7 +40,7 @@ func SetImage(dest,image,hostname string) error {
     }
     return nil
 }
-func storagedup(dest string,d map[string]int) error {
+func (c *Conn)storagedup(dest string,d map[string]int) error {
     p := &govirtlib.PostPayload {
         Action: "dup",
         DuplicateInfo: d,
@@ -48,7 +50,9 @@ func storagedup(dest string,d map[string]int) error {
         Dport: klinutils.Stringtoport("storagehost"),
         Method: "POST",
         Payload: p,
-        Http: true,
+        TrustBytes: c.tb,
+        CertBytes: c.cb,
+        KeyBytes: c.kb,
     }
     resp, err := klinreq.SendPayload(i)
     if err != nil {

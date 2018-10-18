@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 )
 
-func editnetwork(godhcp string, n govirtlib.Network, overwrite bool) error {
+func (c *Conn)editnetwork(godhcp string, n govirtlib.Network, overwrite bool) error {
     method := "POST"
     if overwrite {
         method = "PATCH"
@@ -23,7 +23,9 @@ func editnetwork(godhcp string, n govirtlib.Network, overwrite bool) error {
 		Dport:   klinutils.Stringtoport("godhcp"),
 		Method:  method,
 		Payload: p,
-		Http:    true,
+        CertBytes: c.cb,
+        KeyBytes: c.kb,
+        TrustBytes: c.tb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {
@@ -40,7 +42,7 @@ func editnetwork(godhcp string, n govirtlib.Network, overwrite bool) error {
 	}
 	return nil
 }
-func edithost(godhcp string, n govirtlib.CreateVmForm,overwrite bool) error {
+func (c *Conn) edithost(godhcp string, n govirtlib.CreateVmForm,overwrite bool) error {
     method := "POST"
     if overwrite {
         method = "PATCH"
@@ -54,7 +56,39 @@ func edithost(godhcp string, n govirtlib.CreateVmForm,overwrite bool) error {
 		Dport:   klinutils.Stringtoport("godhcp"),
 		Method:  method,
 		Payload: p,
-		Http:    true,
+        CertBytes: c.cb,
+        KeyBytes: c.kb,
+        TrustBytes: c.tb,
+	}
+	resp, err := klinreq.SendPayload(i)
+	if err != nil {
+		return err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	resp.Body.Close()
+	if resp.StatusCode != 200 {
+		fmt.Println(string(body))
+		return errors.New("Failed, check logs on the godhcp server")
+	}
+	return nil
+}
+func (c *Conn) delhost(godhcp string, host string) error {
+    method := "DELETE"
+	p := govirtlib.PostPayload{
+		Target: "host",
+        Domain: host,
+	}
+	i := &klinreq.ReqInfo{
+		Dest:    godhcp,
+		Dport:   klinutils.Stringtoport("godhcp"),
+		Method:  method,
+		Payload: p,
+        CertBytes: c.cb,
+        KeyBytes: c.kb,
+        TrustBytes: c.tb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {
