@@ -68,4 +68,5 @@ type ReturnPayload struct {
 	HostInfos      map[string]CreateVmForm `json:"hostinfos"`
 	NetInfos       map[string]Network      `json:"netinfo"`
 	Xml            []byte                  `json:"xml"`
+    Parent      string  `json:"parent"`
 }
