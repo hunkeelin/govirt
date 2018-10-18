@@ -26,6 +26,7 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		c.postMu.Lock()
 		err := start(p.Domain, c.L)
 		if err != nil {
+			c.postMu.Unlock()
 			return err
 		}
 		c.postMu.Unlock()
@@ -33,6 +34,7 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		c.postMu.Lock()
 		err = shutdown(p.Domain, c.L)
 		if err != nil {
+			c.postMu.Unlock()
 			return err
 		}
 		c.postMu.Unlock()
@@ -40,13 +42,7 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		c.postMu.Lock()
 		err = reset(p.Domain, c.L, true)
 		if err != nil {
-			return err
-		}
-		c.postMu.Unlock()
-	case "create":
-		c.postMu.Lock()
-		err := create(p.VmForm, c.L)
-		if err != nil {
+			c.postMu.Unlock()
 			return err
 		}
 		c.postMu.Unlock()
@@ -54,6 +50,7 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		c.postMu.Lock()
 		err := destroy(p.Domain, c.L)
 		if err != nil {
+			c.postMu.Unlock()
 			return err
 		}
 		c.postMu.Unlock()
@@ -61,6 +58,7 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		c.postMu.Lock()
 		err := migratev2(p.Domain, p.Target)
 		if err != nil {
+			c.postMu.Unlock()
 			return err
 		}
 		c.postMu.Unlock()
@@ -68,6 +66,7 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		c.postMu.Lock()
 		err := define(p.Xml, c.L)
 		if err != nil {
+			c.postMu.Unlock()
 			return err
 		}
 		c.postMu.Unlock()
@@ -75,6 +74,7 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		c.postMu.Lock()
 		err := undefine(p.Domain, c.L)
 		if err != nil {
+			c.postMu.Unlock()
 			return err
 		}
 		c.postMu.Unlock()
