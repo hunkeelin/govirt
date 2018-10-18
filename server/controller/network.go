@@ -9,7 +9,11 @@ import (
 	"io/ioutil"
 )
 
-func editnetwork(godhcp string, n govirtlib.Network) error {
+func editnetwork(godhcp string, n govirtlib.Network, overwrite bool) error {
+    method := "POST"
+    if overwrite {
+        method = "PATCH"
+    }
 	p := govirtlib.PostPayload{
 		Target:  "network",
 		Netinfo: n,
@@ -17,7 +21,7 @@ func editnetwork(godhcp string, n govirtlib.Network) error {
 	i := &klinreq.ReqInfo{
 		Dest:    godhcp,
 		Dport:   klinutils.Stringtoport("godhcp"),
-		Method:  "PATCH",
+		Method:  method,
 		Payload: p,
 		Http:    true,
 	}
@@ -36,7 +40,11 @@ func editnetwork(godhcp string, n govirtlib.Network) error {
 	}
 	return nil
 }
-func edithost(godhcp string, n govirtlib.CreateVmForm) error {
+func edithost(godhcp string, n govirtlib.CreateVmForm,overwrite bool) error {
+    method := "POST"
+    if overwrite {
+        method = "PATCH"
+    }
 	p := govirtlib.PostPayload{
 		Target: "host",
 		VmForm: n,
@@ -44,7 +52,7 @@ func edithost(godhcp string, n govirtlib.CreateVmForm) error {
 	i := &klinreq.ReqInfo{
 		Dest:    godhcp,
 		Dport:   klinutils.Stringtoport("godhcp"),
-		Method:  "POST",
+		Method:  method,
 		Payload: p,
 		Http:    true,
 	}
