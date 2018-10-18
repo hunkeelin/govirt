@@ -38,8 +38,8 @@ func (c *Conn) setimage(image, hostname string) error {
 		_, err := os.Stat(possible_dup_name)
 		if err == nil {
 			c.storageMu.Lock()
+			defer c.postMu.Unlock()
 			os.Rename(possible_dup_name, c.StorageLocation+hostname+".qcow2")
-			c.storageMu.Unlock()
 			return nil
 		}
 	}
@@ -65,6 +65,7 @@ func (c *Conn) duplicate(lookup map[string]int) error {
 	}
 	go func() {
 		c.storageMu.Lock()
+		defer c.storageMu.Unlock()
 		for _, location := range files {
 			tmpstring := strings.Replace(location, c.StorageLocation, "", -1)
 			image := strings.Replace(tmpstring, c.TemplateRegex, "", -1)
@@ -92,7 +93,6 @@ func (c *Conn) duplicate(lookup map[string]int) error {
 			}
 			fmt.Println("finished duplicating image:", image)
 		}
-		c.storageMu.Unlock()
 	}()
 	return nil
 }

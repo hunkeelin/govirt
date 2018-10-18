@@ -24,60 +24,62 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 	switch strings.ToLower(p.Action) {
 	case "start":
 		c.postMu.Lock()
+		defer c.postMu.Unlock()
 		err := start(p.Domain, c.L)
 		if err != nil {
-			c.postMu.Unlock()
 			return err
 		}
-		c.postMu.Unlock()
 	case "shutdown":
 		c.postMu.Lock()
+		defer c.postMu.Unlock()
 		err = shutdown(p.Domain, c.L)
 		if err != nil {
-			c.postMu.Unlock()
+
 			return err
 		}
-		c.postMu.Unlock()
+
 	case "reset":
 		c.postMu.Lock()
+		defer c.postMu.Unlock()
 		err = reset(p.Domain, c.L, true)
 		if err != nil {
-			c.postMu.Unlock()
+
 			return err
 		}
-		c.postMu.Unlock()
+
 	case "destroy":
 		c.postMu.Lock()
+		defer c.postMu.Unlock()
 		err := destroy(p.Domain, c.L)
 		if err != nil {
-			c.postMu.Unlock()
+
 			return err
 		}
-		c.postMu.Unlock()
+
 	case "migrate":
 		c.postMu.Lock()
+		defer c.postMu.Unlock()
 		err := migratev2(p.Domain, p.Target)
 		if err != nil {
-			c.postMu.Unlock()
+
 			return err
 		}
-		c.postMu.Unlock()
+
 	case "define":
-		c.postMu.Lock()
 		err := define(p.Xml, c.L)
 		if err != nil {
-			c.postMu.Unlock()
+
 			return err
 		}
-		c.postMu.Unlock()
+
 	case "undefine":
 		c.postMu.Lock()
+		defer c.postMu.Unlock()
 		err := undefine(p.Domain, c.L)
 		if err != nil {
-			c.postMu.Unlock()
+
 			return err
 		}
-		c.postMu.Unlock()
 	default:
 		return errors.New("Invalid Action")
 	}
