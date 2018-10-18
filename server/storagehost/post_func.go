@@ -38,24 +38,24 @@ func (c *Conn) setimage(image, hostname string) error {
 		_, err := os.Stat(possible_dup_name)
 		if err == nil {
 			c.storageMu.Lock()
-			defer c.storageMu.Unlock()
 			os.Rename(possible_dup_name, c.StorageLocation+hostname+".qcow2")
+			c.storageMu.Unlock()
 			return nil
 		}
 	}
-	dupimage, err := os.OpenFile(newimage, os.O_WRONLY|os.O_CREATE|os.O_TRUNC|os.O_APPEND, 0644)
-	if err != nil {
-		fmt.Println("Unable to create create image")
-		return err
-	}
-	todup, err := ioutil.ReadFile(c.StorageLocation + image + "_template.img")
-	if err != nil {
-		fmt.Println("Unable to read file", c.StorageLocation+image+"_template.img")
-		return err
-	}
-	dupimage.Write(todup)
-	dupimage.Close()
-	return nil
+	go func() {
+		dupimage, err := os.OpenFile(newimage, os.O_WRONLY|os.O_CREATE|os.O_TRUNC|os.O_APPEND, 0644)
+		if err != nil {
+			fmt.Println("Unable to create create image", err)
+		}
+		todup, err := ioutil.ReadFile(c.StorageLocation + image + "_template.img")
+		if err != nil {
+			fmt.Println("Unable to read file", c.StorageLocation+image+"_template.img", err)
+		}
+		dupimage.Write(todup)
+		dupimage.Close()
+	}()
+	return errors.New("No dup image is avalible, copying from original, will take a while")
 }
 func (c *Conn) duplicate(lookup map[string]int) error {
 	files, err := filepath.Glob(c.StorageLocation + "*" + c.TemplateRegex)
@@ -64,8 +64,6 @@ func (c *Conn) duplicate(lookup map[string]int) error {
 		return err
 	}
 	go func() {
-		c.storageMu.Lock()
-		defer c.storageMu.Unlock()
 		for _, location := range files {
 			tmpstring := strings.Replace(location, c.StorageLocation, "", -1)
 			image := strings.Replace(tmpstring, c.TemplateRegex, "", -1)
@@ -82,6 +80,9 @@ func (c *Conn) duplicate(lookup map[string]int) error {
 				lookup[image] = 10
 			}
 			for j := 1; j < lookup[image]+1; j++ {
+				if klinutils.Exist(c.StorageLocation + image + "_dup_" + strconv.Itoa(j) + "_ready") {
+					continue
+				}
 				dupimage, err := os.OpenFile(c.StorageLocation+image+"_dup_"+strconv.Itoa(j)+"copying", os.O_WRONLY|os.O_CREATE|os.O_TRUNC|os.O_APPEND, 0644)
 				if err != nil {
 					fmt.Println("Unable to create duplicates ", c.StorageLocation+image+"_dup_"+string(j))
@@ -89,7 +90,9 @@ func (c *Conn) duplicate(lookup map[string]int) error {
 				}
 				dupimage.Write(todup)
 				dupimage.Close()
+				c.storageMu.Lock()
 				os.Rename(c.StorageLocation+image+"_dup_"+strconv.Itoa(j)+"copying", c.StorageLocation+image+"_dup_"+strconv.Itoa(j)+"_ready")
+				c.storageMu.Unlock()
 			}
 			fmt.Println("finished duplicating image:", image)
 		}
