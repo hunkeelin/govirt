@@ -38,7 +38,7 @@ func (c *Conn) setimage(image, hostname string) error {
 		_, err := os.Stat(possible_dup_name)
 		if err == nil {
 			c.storageMu.Lock()
-			defer c.postMu.Unlock()
+			defer c.storageMu.Unlock()
 			os.Rename(possible_dup_name, c.StorageLocation+hostname+".qcow2")
 			return nil
 		}
