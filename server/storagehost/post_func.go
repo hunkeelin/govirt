@@ -68,6 +68,9 @@ func (c *Conn) duplicate(lookup map[string]int) error {
 		for _, location := range files {
 			tmpstring := strings.Replace(location, c.StorageLocation, "", -1)
 			image := strings.Replace(tmpstring, c.TemplateRegex, "", -1)
+			if lookup[image] == 0 {
+				continue // don't read something you dn't need to read.
+			}
 			fmt.Println("duplicating image:", image)
 			todup, err := ioutil.ReadFile(location)
 			if err != nil {
@@ -87,6 +90,7 @@ func (c *Conn) duplicate(lookup map[string]int) error {
 				dupimage.Close()
 				os.Rename(c.StorageLocation+image+"_dup_"+strconv.Itoa(j)+"copying", c.StorageLocation+image+"_dup_"+strconv.Itoa(j)+"_ready")
 			}
+			fmt.Println("finished duplicating image:", image)
 		}
 		c.storageMu.Unlock()
 	}()

@@ -22,6 +22,7 @@ func (c *Conn) del(w http.ResponseWriter, r *http.Request) error {
 	c.postMu.Lock()
 	err = delvm(p.Domain, c.L)
 	if err != nil {
+		c.postMu.Unlock()
 		return err
 	}
 	c.postMu.Unlock()
