@@ -34,50 +34,39 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 		defer c.postMu.Unlock()
 		err = shutdown(p.Domain, c.L)
 		if err != nil {
-
 			return err
 		}
-
 	case "reset":
 		c.postMu.Lock()
 		defer c.postMu.Unlock()
 		err = reset(p.Domain, c.L, true)
 		if err != nil {
-
 			return err
 		}
-
 	case "destroy":
 		c.postMu.Lock()
 		defer c.postMu.Unlock()
 		err := destroy(p.Domain, c.L)
 		if err != nil {
-
 			return err
 		}
-
 	case "migrate":
 		c.postMu.Lock()
 		defer c.postMu.Unlock()
 		err := migratev2(p.Domain, p.Target)
 		if err != nil {
-
 			return err
 		}
-
 	case "define":
 		err := define(p.Xml, c.L)
 		if err != nil {
-
 			return err
 		}
-
 	case "undefine":
 		c.postMu.Lock()
 		defer c.postMu.Unlock()
 		err := undefine(p.Domain, c.L)
 		if err != nil {
-
 			return err
 		}
 	default:

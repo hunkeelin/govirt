@@ -76,7 +76,7 @@ func migratev2(domain, target string) error {
 	args := []string{"migrate", "--live", domain, "qemu+tls://" + target + "/system"}
 	err := klinutils.Runshellv2(cmd, args)
 	if err != nil {
-		return err
+		return errors.New("Unable to migrate " + domain + " to " + target)
 	}
 	return nil
 }
