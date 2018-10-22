@@ -15,21 +15,25 @@ func (c *Conn) MainHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 			w.WriteHeader(500)
+			w.Write([]byte(err.Error()))
 		}
 	case "POST":
 		err := c.post(w, r)
 		if err != nil {
 			fmt.Println(err)
 			w.WriteHeader(500)
+			w.Write([]byte(err.Error()))
 		}
 	case "DELETE":
 		err := c.del(w, r)
 		if err != nil {
 			fmt.Println(err)
 			w.WriteHeader(500)
+			w.Write([]byte(err.Error()))
 		}
 	default:
 		fmt.Println("invalid method")
 		w.WriteHeader(500)
+        w.Write([]byte("invalid method"))
 	}
 }
