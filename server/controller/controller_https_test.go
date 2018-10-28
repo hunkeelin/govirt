@@ -95,6 +95,48 @@ func TestEditHost(t *testing.T) {
 		panic(err)
 	}
 }
+func TestCreateVm(t *testing.T){
+	fmt.Println("testing createvm")
+	var err error
+	c := Conn{}
+	c.cb, err = ioutil.ReadFile("cert")
+	if err != nil {
+		panic(err)
+	}
+	c.kb, err = ioutil.ReadFile("key")
+	if err != nil {
+		panic(err)
+	}
+	c.tb, err = ioutil.ReadFile("govirt.crt")
+	if err != nil {
+		panic(err)
+    }
+    u,err := ioutil.ReadFile("utemplate.xml")
+    if err != nil {
+        panic(err)
+    }
+    ixml := make(map[string][]byte)
+    ixml["ubuntu"] = u
+    c.Ixml = ixml
+	uuid, err := klinutils.Genuuid()
+	if err != nil {
+		panic(err)
+	}
+    v := govirtlib.CreateVmForm {
+        Hostname: "createvmtest3",
+        VmMac: "d4:ae:52:6e:39:64",
+        Uuid: string(uuid),
+        VmIp: "10.180.250.113",
+        CpuCount: 2,
+        MemoryCount: 4,
+        Image: "ubuntu",
+        Vlan: "govirtmgmt",
+    }
+    err = c.CreateNewVm("sf_deploy",v)
+    if err != nil {
+        panic(err)
+    }
+}
 func TestSetimage(t *testing.T) {
 	fmt.Println("testing set image")
 	var err error
@@ -182,7 +224,7 @@ func TestMigrate(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	err = c.Migratehost("sf01-lab-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "cent2")
+	err = c.Migratehost("sf01-lab-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "createvmtest")
 	if err != nil {
 		panic(err)
 	}

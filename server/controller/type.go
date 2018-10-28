@@ -6,4 +6,5 @@ type Conn struct {
     authcb []byte
     authkb []byte
     authtb []byte
+    Ixml map[string][]byte
 }
