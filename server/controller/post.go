@@ -16,15 +16,11 @@ func (c *Conn) post(w http.ResponseWriter, r *http.Request) error {
 	}
 	switch strings.ToLower(p.Action) {
 	case "host":
-		c.postMu.Lock()
-		defer c.postMu.Unlock()
-		err := start(p.Domain, c.L)
+		err := c.CreateNewVm(p)
 		if err != nil {
 			return err
 		}
 	case "env":
-		c.postMu.Lock()
-		defer c.postMu.Unlock()
 		err = shutdown(p.Domain, c.L)
 		if err != nil {
 			return err
