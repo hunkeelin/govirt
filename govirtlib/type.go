@@ -31,6 +31,7 @@ type PostPayload struct {
 	Netinfo     Network  `json:"netinfo"` // when you want to add or delete network for. :godhcp
 	AddStrgInfo StrgInfo `json:"storageinfo"`
 	Xml         []byte   `json:"xml"`
+	Cluster     string   `json:"cluster"` // the name of the cluster
 }
 type StrgInfo struct {
 	Hostname string `json:"hostname"`
@@ -68,5 +69,5 @@ type ReturnPayload struct {
 	HostInfos      map[string]CreateVmForm `json:"hostinfos"`
 	NetInfos       map[string]Network      `json:"netinfo"`
 	Xml            []byte                  `json:"xml"`
-    Parent      string  `json:"parent"`
+	Parent         string                  `json:"parent"`
 }
