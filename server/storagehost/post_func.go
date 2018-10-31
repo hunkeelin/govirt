@@ -33,13 +33,13 @@ func (c *Conn) setimage(image, hostname string) error {
 	if _, err := os.Stat(c.StorageLocation + image + "_template.img"); os.IsNotExist(err) {
 		return err
 	}
+	c.storageMu.Lock()
+	defer c.storageMu.Unlock()
 	for i := 1; i < 11; i++ {
 		possible_dup_name := c.StorageLocation + image + "_dup_" + strconv.Itoa(i) + "_ready"
 		_, err := os.Stat(possible_dup_name)
 		if err == nil {
-			c.storageMu.Lock()
 			os.Rename(possible_dup_name, c.StorageLocation+hostname+".qcow2")
-			c.storageMu.Unlock()
 			return nil
 		}
 	}
