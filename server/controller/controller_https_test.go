@@ -86,11 +86,15 @@ func TestEditHost(t *testing.T) {
 		VmIp:      "10.180.250.40",
 		Leasetime: 15000,
 	}
+    v := govirtlib.PostPayload {
+        VmForm: h,
+        Cluster: "sf_deploy",
+    }
 	m, err := parse("config")
 	if err != nil {
 		panic(err)
 	}
-	err = c.edithost(m["sf_deploy"].Godhcp, h, false)
+	err = c.edithost(m["sf_deploy"].Godhcp, v, false)
 	if err != nil {
 		panic(err)
 	}
@@ -122,7 +126,7 @@ func TestCreateVm(t *testing.T){
 	if err != nil {
 		panic(err)
 	}
-    v := govirtlib.CreateVmForm {
+    h := govirtlib.CreateVmForm {
         Hostname: "createvmtest3",
         VmMac: "d4:ae:52:6e:39:64",
         Uuid: string(uuid),
@@ -132,7 +136,11 @@ func TestCreateVm(t *testing.T){
         Image: "ubuntu",
         Vlan: "govirtmgmt",
     }
-    err = c.CreateNewVm("sf_deploy",v)
+    v := govirtlib.PostPayload{
+        VmForm: h,
+        Cluster: "sf_deploy",
+    }
+    err = c.CreateNewVm(v)
     if err != nil {
         panic(err)
     }
