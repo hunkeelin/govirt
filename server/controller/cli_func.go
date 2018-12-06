@@ -73,8 +73,8 @@ func (c *Conn) CreateNewVm(v govirtlib.PostPayload) error {
 	xml := c.Ixml[v.VmForm.Image]
 	xml = bytes.Replace(xml, []byte("name_replace"), []byte(v.VmForm.Hostname), -1)
 	xml = bytes.Replace(xml, []byte("uuid_replace"), []byte(v.VmForm.Uuid), -1)
-	xml = bytes.Replace(xml, []byte("memory_replace"), []byte(strconv.VmForm.Itoa(v.VmForm.MemoryCount)), -1)
-	xml = bytes.Replace(xml, []byte("cpu_replace"), []byte(strconv.VmForm.Itoa(v.VmForm.CpuCount)), -1)
+	xml = bytes.Replace(xml, []byte("memory_replace"), []byte(strconv.Itoa(v.VmForm.MemoryCount)), -1)
+	xml = bytes.Replace(xml, []byte("cpu_replace"), []byte(strconv.Itoa(v.VmForm.CpuCount)), -1)
 	xml = bytes.Replace(xml, []byte("imagedir_replace"), []byte("/data/govirt/storage"), -1)
 	xml = bytes.Replace(xml, []byte("mac_replace"), []byte(v.VmForm.VmMac), -1)
 	xml = bytes.Replace(xml, []byte("vlan_replace"), []byte(v.VmForm.Vlan), -1)

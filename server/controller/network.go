@@ -42,14 +42,14 @@ func (c *Conn)editnetwork(godhcp string, n govirtlib.Network, overwrite bool) er
 	}
 	return nil
 }
-func (c *Conn) edithost(godhcp string, n govirtlib.CreateVmForm,overwrite bool) error {
+func (c *Conn) edithost(godhcp string, n govirtlib.PostPayload,overwrite bool) error {
     method := "POST"
     if overwrite {
         method = "PATCH"
     }
 	p := govirtlib.PostPayload{
 		Target: "host",
-		VmForm: n,
+		VmForm: n.VmForm,
 	}
 	i := &klinreq.ReqInfo{
 		Dest:    godhcp,
