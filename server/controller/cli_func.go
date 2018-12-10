@@ -58,7 +58,7 @@ func (c *Conn) CreateNewVm(v govirtlib.PostPayload) error {
 	if c.Ixml[v.VmForm.Image] == nil {
 		return errors.New("No image for : " + v.VmForm.Image)
 	}
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}

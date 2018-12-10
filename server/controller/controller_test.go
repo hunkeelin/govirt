@@ -5,7 +5,7 @@ import (
     "testing"
 )
 func TestParse(t *testing.T) {
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}

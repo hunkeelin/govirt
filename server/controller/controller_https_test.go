@@ -30,7 +30,7 @@ func TestDup(t *testing.T) {
 	d := make(map[string]int)
 	d["centos"] = 5
 	d["ubuntu"] = 100
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,7 @@ func TestDelstrg(t *testing.T){
 	if err != nil {
 		panic(err)
     }
-    m, err := parse("config")
+    m, err := Parse("config")
     if err != nil {
         panic(err)
     }
@@ -80,7 +80,7 @@ func TestDelHost(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -141,7 +141,7 @@ func TestEditHost(t *testing.T) {
         VmForm: h,
         Cluster: "sf_deploy",
     }
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -216,7 +216,7 @@ func TestSetimage(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -261,7 +261,7 @@ func TestDefinevm(t *testing.T) {
 	template = bytes.Replace(template, []byte("mac_replace"), mac, -1)
 	template = bytes.Replace(template, []byte("vlan_replace"), []byte("govirtmgmt"), -1)
 	fmt.Println(string(template))
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -309,7 +309,7 @@ func TestGetvm(t *testing.T) {
 		panic(err)
 	}
 	fmt.Println("getting a list of vm")
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -370,7 +370,7 @@ func TestEditNet(t *testing.T) {
 		Lease:    "3601",
 		Maxlease: "7200",
 	}
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
