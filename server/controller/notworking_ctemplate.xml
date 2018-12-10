@@ -4,9 +4,6 @@
   <memory unit='GiB'>memory_replace</memory>
   <currentMemory unit='GiB'>memory_replace</currentMemory>
   <vcpu placement='static'>cpu_replace</vcpu>
-  <resource>
-    <partition>/machine</partition>
-  </resource>
   <os>
     <type arch='x86_64' machine='pc-i440fx-rhel7.0.0'>hvm</type>
     <boot dev='hd'/>
@@ -15,10 +12,8 @@
     <acpi/>
     <apic/>
   </features>
-  <cpu mode='custom' match='exact' check='full'>
-    <model fallback='forbid'>Nehalem-IBRS</model>
-    <feature policy='require' name='x2apic'/>
-    <feature policy='require' name='hypervisor'/>
+  <cpu mode='custom' match='exact' check='partial'>
+    <model fallback='allow'>Broadwell</model>
   </cpu>
   <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
@@ -27,7 +22,7 @@
   </clock>
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
-  <on_crash>destroy</on_crash>
+  <on_crash>restart</on_crash>
   <pm>
     <suspend-to-mem enabled='no'/>
     <suspend-to-disk enabled='no'/>
@@ -37,14 +32,14 @@
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
       <source file='imagedir_replace/name_replace.qcow2'/>
-      <target dev='hda' bus='ide'/>
-      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+      <target dev='vda' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <target dev='hdb' bus='ide'/>
+      <target dev='hda' bus='ide'/>
       <readonly/>
-      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
     <controller type='usb' index='0' model='ich9-ehci1'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x7'/>
@@ -85,6 +80,5 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </memballoon>
   </devices>
-  <seclabel type='dynamic' model='selinux' relabel='yes'/>
-  <seclabel type='dynamic' model='dac' relabel='yes'/>
 </domain>
+
