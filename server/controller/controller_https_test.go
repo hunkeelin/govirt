@@ -59,7 +59,7 @@ func TestDelstrg(t *testing.T){
     if err != nil {
         panic(err)
     }
-    err = c.delimage(m["sf_deploy"].Storage,"utest1")
+    err = c.delimage(m["sf_deploy"].Storage,"utest")
     if err != nil {
         panic(err)
     }
@@ -85,7 +85,7 @@ func TestDelHost(t *testing.T) {
 		panic(err)
 	}
     // shutdown host
-    todelete := "utest1"
+    todelete := "ctest1"
     p, err := c.Getvms(m["sf_deploy"].Govirt)
     if err != nil {
         panic(err)
@@ -98,10 +98,10 @@ func TestDelHost(t *testing.T) {
                     if err != nil {
                         panic(err)
                     }
-                    err = c.Statevm("undefine",todelete,hostsd.Parent)
-                    if err != nil {
-                        panic(err)
-                    }
+                }
+                err = c.Statevm("undefine",todelete,hostsd.Parent)
+                if err != nil {
+                    panic(err)
                 }
             }
         }
@@ -166,7 +166,7 @@ func TestCreateVm(t *testing.T){
 	if err != nil {
 		panic(err)
     }
-    u,err := ioutil.ReadFile("utemplate.xml")
+    u,err := ioutil.ReadFile("ctemplate.xml")
     if err != nil {
         panic(err)
     }
@@ -185,9 +185,9 @@ func TestCreateVm(t *testing.T){
         Hostname: "utest1",
         VmMac: string(macaddr),
         Uuid: string(uuid),
-        VmIp: "10.180.250.119",
-        CpuCount: 1,
-        MemoryCount: 2,
+        VmIp: "10.180.250.61",
+        CpuCount: 2,
+        MemoryCount: 4,
         Image: "ubuntu",
         Vlan: "govirtmgmt",
     }
