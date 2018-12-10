@@ -6,9 +6,9 @@ import (
 )
 
 type Conn struct {
-	cb     []byte
-	kb     []byte
-	tb     []byte
+	Cb     []byte
+	Kb     []byte
+	Tb     []byte
 	postMu sync.Mutex
 	authcb []byte
 	authkb []byte

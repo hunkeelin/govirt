@@ -21,9 +21,9 @@ func (c *Conn) Getxml(vm, host string) ([]byte, error) {
 		Dport:      klinutils.Stringtoport("govirthost"),
 		Method:     "GET",
 		Payload:    p,
-		TrustBytes: c.tb,
-		CertBytes:  c.cb,
-		KeyBytes:   c.kb,
+		TrustBytes: c.Tb,
+		CertBytes:  c.Cb,
+		KeyBytes:   c.Kb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {
@@ -55,9 +55,9 @@ func (c *Conn) Statevm(state, vm, host string) error {
 		Dport:      klinutils.Stringtoport("govirthost"),
 		Method:     "POST",
 		Payload:    p,
-		TrustBytes: c.tb,
-		CertBytes:  c.cb,
-		KeyBytes:   c.kb,
+		TrustBytes: c.Tb,
+		CertBytes:  c.Cb,
+		KeyBytes:   c.Kb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {
@@ -85,9 +85,9 @@ func (c *Conn) migrate(ori, dest, vm string) error {
 		Dport:      klinutils.Stringtoport("govirthost"),
 		Method:     "POST",
 		Payload:    p,
-		TrustBytes: c.tb,
-		CertBytes:  c.cb,
-		KeyBytes:   c.kb,
+		TrustBytes: c.Tb,
+		CertBytes:  c.Cb,
+		KeyBytes:   c.Kb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {
@@ -115,9 +115,9 @@ func (c *Conn) Getvms(hosts []string) ([]govirtlib.ReturnPayload, error) {
 			Dport:      klinutils.Stringtoport("govirthost"),
 			Method:     "GET",
 			Payload:    p,
-			TrustBytes: c.tb,
-			CertBytes:  c.cb,
-			KeyBytes:   c.kb,
+			TrustBytes: c.Tb,
+			CertBytes:  c.Cb,
+			KeyBytes:   c.Kb,
 		}
 		resp, err := klinreq.SendPayload(i)
 		if err != nil {
@@ -152,9 +152,9 @@ func (c *Conn) Define(xml []byte, dest string) error {
 		Dport:      klinutils.Stringtoport("govirthost"),
 		Method:     "POST",
 		Payload:    p,
-		TrustBytes: c.tb,
-		CertBytes:  c.cb,
-		KeyBytes:   c.kb,
+		TrustBytes: c.Tb,
+		CertBytes:  c.Cb,
+		KeyBytes:   c.Kb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {

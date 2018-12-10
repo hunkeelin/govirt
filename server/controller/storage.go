@@ -21,9 +21,9 @@ func (c *Conn) setimage(dest,image,hostname string) error {
         Dport: klinutils.Stringtoport("storagehost"),
         Method: "POST",
         Payload: p,
-        TrustBytes: c.tb,
-        CertBytes: c.cb,
-        KeyBytes: c.kb,
+        TrustBytes: c.Tb,
+        CertBytes: c.Cb,
+        KeyBytes: c.Kb,
     }
     resp, err := klinreq.SendPayload(i)
     if err != nil {
@@ -50,9 +50,9 @@ func (c *Conn) delimage(dest,hostname string) error {
         Dport: klinutils.Stringtoport("storagehost"),
         Method: "DELETE",
         Payload: p,
-        TrustBytes: c.tb,
-        CertBytes: c.cb,
-        KeyBytes: c.kb,
+        TrustBytes: c.Tb,
+        CertBytes: c.Cb,
+        KeyBytes: c.Kb,
     }
     resp, err := klinreq.SendPayload(i)
     if err != nil {
@@ -79,9 +79,9 @@ func (c *Conn)storagedup(dest string,d map[string]int) error {
         Dport: klinutils.Stringtoport("storagehost"),
         Method: "POST",
         Payload: p,
-        TrustBytes: c.tb,
-        CertBytes: c.cb,
-        KeyBytes: c.kb,
+        TrustBytes: c.Tb,
+        CertBytes: c.Cb,
+        KeyBytes: c.Kb,
     }
     resp, err := klinreq.SendPayload(i)
     if err != nil {
