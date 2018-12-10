@@ -15,22 +15,22 @@ func TestDup(t *testing.T) {
 	fmt.Println("testing dup")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
 	d := make(map[string]int)
-	d["centos"] = 3
-	d["ubuntu"] = 5
-	m, err := parse("config")
+	d["centos"] = 5
+	d["ubuntu"] = 100
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -39,44 +39,95 @@ func TestDup(t *testing.T) {
 		panic(err)
 	}
 }
+func TestDelstrg(t *testing.T){
+	fmt.Println("testing delete storage host")
+	var err error
+	c := Conn{}
+	c.Cb, err = ioutil.ReadFile("cert")
+	if err != nil {
+		panic(err)
+	}
+	c.Kb, err = ioutil.ReadFile("key")
+	if err != nil {
+		panic(err)
+	}
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
+	if err != nil {
+		panic(err)
+    }
+    m, err := Parse("config")
+    if err != nil {
+        panic(err)
+    }
+    err = c.delimage(m["sf_deploy"].Storage,"utest1")
+    if err != nil {
+        panic(err)
+    }
+}
 func TestDelHost(t *testing.T) {
 	fmt.Println("testing delete host")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
-	err = c.delhost(m["sf_deploy"].Godhcp, "sf01-test2.squaretrade.com")
+    // shutdown host
+    todelete := "utest1"
+    p, err := c.Getvms(m["sf_deploy"].Govirt)
+    if err != nil {
+        panic(err)
+    }
+    for _, hostsd := range p {
+        for _, i := range hostsd.Domains {
+            if i.Domain.Name == todelete {
+                if i.State == "running" {
+                    err = c.Statevm("destroy",todelete,hostsd.Parent)
+                    if err != nil {
+                        panic(err)
+                    }
+                    err = c.Statevm("undefine",todelete,hostsd.Parent)
+                    if err != nil {
+                        panic(err)
+                    }
+                }
+            }
+        }
+    }
+	err = c.delhost_network(m["sf_deploy"].Godhcp, todelete)
 	if err != nil {
 		panic(err)
 	}
+    err = c.delimage(m["sf_deploy"].Storage,todelete)
+    if err != nil {
+        panic(err)
+    }
 }
 func TestEditHost(t *testing.T) {
 	fmt.Println("testing patch host")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
@@ -90,7 +141,7 @@ func TestEditHost(t *testing.T) {
         VmForm: h,
         Cluster: "sf_deploy",
     }
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -103,15 +154,15 @@ func TestCreateVm(t *testing.T){
 	fmt.Println("testing createvm")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
     }
@@ -126,13 +177,17 @@ func TestCreateVm(t *testing.T){
 	if err != nil {
 		panic(err)
 	}
+    macaddr, err := klinutils.Genmac()
+    if err != nil {
+        panic(err)
+    }
     h := govirtlib.CreateVmForm {
-        Hostname: "createvmtest3",
-        VmMac: "d4:ae:52:6e:39:64",
+        Hostname: "utest1",
+        VmMac: string(macaddr),
         Uuid: string(uuid),
-        VmIp: "10.180.250.113",
-        CpuCount: 2,
-        MemoryCount: 4,
+        VmIp: "10.180.250.119",
+        CpuCount: 1,
+        MemoryCount: 2,
         Image: "ubuntu",
         Vlan: "govirtmgmt",
     }
@@ -149,19 +204,19 @@ func TestSetimage(t *testing.T) {
 	fmt.Println("testing set image")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -174,15 +229,15 @@ func TestDefinevm(t *testing.T) {
 	fmt.Println("testing create vm")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
@@ -206,7 +261,7 @@ func TestDefinevm(t *testing.T) {
 	template = bytes.Replace(template, []byte("mac_replace"), mac, -1)
 	template = bytes.Replace(template, []byte("vlan_replace"), []byte("govirtmgmt"), -1)
 	fmt.Println(string(template))
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -220,19 +275,20 @@ func TestDefinevm(t *testing.T) {
 func TestMigrate(t *testing.T) {
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
-	err = c.Migratehost("sf01-lab-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "createvmtest")
+	//err = c.Migratehost("sf01-lab-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "createvmtest")
+	err = c.Migratehost("sf01-lab-netsrv-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "createvmtest2")
 	if err != nil {
 		panic(err)
 	}
@@ -240,20 +296,20 @@ func TestMigrate(t *testing.T) {
 func TestGetvm(t *testing.T) {
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("getting a list of vm")
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}
@@ -272,15 +328,15 @@ func TestStatevm(t *testing.T) {
 	fmt.Println("testing start vm with https")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
@@ -293,15 +349,15 @@ func TestEditNet(t *testing.T) {
 	fmt.Println("testing patch network")
 	var err error
 	c := Conn{}
-	c.cb, err = ioutil.ReadFile("cert")
+	c.Cb, err = ioutil.ReadFile("cert")
 	if err != nil {
 		panic(err)
 	}
-	c.kb, err = ioutil.ReadFile("key")
+	c.Kb, err = ioutil.ReadFile("key")
 	if err != nil {
 		panic(err)
 	}
-	c.tb, err = ioutil.ReadFile("govirt.crt")
+	c.Tb, err = ioutil.ReadFile("govirt.crt")
 	if err != nil {
 		panic(err)
 	}
@@ -314,7 +370,7 @@ func TestEditNet(t *testing.T) {
 		Lease:    "3601",
 		Maxlease: "7200",
 	}
-	m, err := parse("config")
+	m, err := Parse("config")
 	if err != nil {
 		panic(err)
 	}

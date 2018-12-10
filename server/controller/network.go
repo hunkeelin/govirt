@@ -23,9 +23,9 @@ func (c *Conn)editnetwork(godhcp string, n govirtlib.Network, overwrite bool) er
 		Dport:   klinutils.Stringtoport("godhcp"),
 		Method:  method,
 		Payload: p,
-        CertBytes: c.cb,
-        KeyBytes: c.kb,
-        TrustBytes: c.tb,
+        CertBytes: c.Cb,
+        KeyBytes: c.Kb,
+        TrustBytes: c.Tb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {
@@ -56,9 +56,9 @@ func (c *Conn) edithost(godhcp string, n govirtlib.PostPayload,overwrite bool) e
 		Dport:   klinutils.Stringtoport("godhcp"),
 		Method:  method,
 		Payload: p,
-        CertBytes: c.cb,
-        KeyBytes: c.kb,
-        TrustBytes: c.tb,
+        CertBytes: c.Cb,
+        KeyBytes: c.Kb,
+        TrustBytes: c.Tb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {
@@ -75,7 +75,7 @@ func (c *Conn) edithost(godhcp string, n govirtlib.PostPayload,overwrite bool) e
 	}
 	return nil
 }
-func (c *Conn) delhost(godhcp string, host string) error {
+func (c *Conn) delhost_network(godhcp string, host string) error {
     method := "DELETE"
 	p := govirtlib.PostPayload{
 		Target: "host",
@@ -86,9 +86,9 @@ func (c *Conn) delhost(godhcp string, host string) error {
 		Dport:   klinutils.Stringtoport("godhcp"),
 		Method:  method,
 		Payload: p,
-        CertBytes: c.cb,
-        KeyBytes: c.kb,
-        TrustBytes: c.tb,
+        CertBytes: c.Cb,
+        KeyBytes: c.Kb,
+        TrustBytes: c.Tb,
 	}
 	resp, err := klinreq.SendPayload(i)
 	if err != nil {

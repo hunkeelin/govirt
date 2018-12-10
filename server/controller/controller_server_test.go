@@ -29,7 +29,7 @@ func TestServer(t *testing.T){
         SignCA: "nginx",
     }
     w.CABytes, err = klinutils.Wget(r)
-    c.cb, c.kb, err = client.Getkeycrtbyte(w)
+    c.Cb, c.Kb, err = client.Getkeycrtbyte(w)
     if err != nil {
         panic(err)
     }

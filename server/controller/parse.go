@@ -13,7 +13,7 @@ type ClusterInfo struct {
 	Storage     string
 }
 
-func parse(f string) (map[string]ClusterInfo, error) {
+func Parse(f string) (map[string]ClusterInfo, error) {
 	m := make(map[string]ClusterInfo)
 	b, err := ioutil.ReadFile(f)
 	if err != nil {
