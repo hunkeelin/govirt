@@ -70,4 +70,5 @@ type ReturnPayload struct {
 	NetInfos       map[string]Network      `json:"netinfo"`
 	Xml            []byte                  `json:"xml"`
 	Parent         string                  `json:"parent"`
+	listvms        map[string][]DomainInfo `json:"listvms"`
 }
