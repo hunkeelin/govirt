@@ -28,8 +28,8 @@ func TestDup(t *testing.T) {
 		panic(err)
 	}
 	d := make(map[string]int)
-	d["centos"] = 3
-	d["ubuntu"] = 5
+	d["centos"] = 5
+	d["ubuntu"] = 100
 	m, err := parse("config")
 	if err != nil {
 		panic(err)
@@ -38,6 +38,31 @@ func TestDup(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+}
+func TestDelstrg(t *testing.T){
+	fmt.Println("testing delete storage host")
+	var err error
+	c := Conn{}
+	c.cb, err = ioutil.ReadFile("cert")
+	if err != nil {
+		panic(err)
+	}
+	c.kb, err = ioutil.ReadFile("key")
+	if err != nil {
+		panic(err)
+	}
+	c.tb, err = ioutil.ReadFile("govirt.crt")
+	if err != nil {
+		panic(err)
+    }
+    m, err := parse("config")
+    if err != nil {
+        panic(err)
+    }
+    err = c.delimage(m["sf_deploy"].Storage,"utest1")
+    if err != nil {
+        panic(err)
+    }
 }
 func TestDelHost(t *testing.T) {
 	fmt.Println("testing delete host")
@@ -59,10 +84,36 @@ func TestDelHost(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	err = c.delhost(m["sf_deploy"].Godhcp, "sf01-test2.squaretrade.com")
+    // shutdown host
+    todelete := "utest1"
+    p, err := c.Getvms(m["sf_deploy"].Govirt)
+    if err != nil {
+        panic(err)
+    }
+    for _, hostsd := range p {
+        for _, i := range hostsd.Domains {
+            if i.Domain.Name == todelete {
+                if i.State == "running" {
+                    err = c.Statevm("destroy",todelete,hostsd.Parent)
+                    if err != nil {
+                        panic(err)
+                    }
+                    err = c.Statevm("undefine",todelete,hostsd.Parent)
+                    if err != nil {
+                        panic(err)
+                    }
+                }
+            }
+        }
+    }
+	err = c.delhost_network(m["sf_deploy"].Godhcp, todelete)
 	if err != nil {
 		panic(err)
 	}
+    err = c.delimage(m["sf_deploy"].Storage,todelete)
+    if err != nil {
+        panic(err)
+    }
 }
 func TestEditHost(t *testing.T) {
 	fmt.Println("testing patch host")
@@ -126,13 +177,17 @@ func TestCreateVm(t *testing.T){
 	if err != nil {
 		panic(err)
 	}
+    macaddr, err := klinutils.Genmac()
+    if err != nil {
+        panic(err)
+    }
     h := govirtlib.CreateVmForm {
-        Hostname: "createvmtest3",
-        VmMac: "d4:ae:52:6e:39:64",
+        Hostname: "utest1",
+        VmMac: string(macaddr),
         Uuid: string(uuid),
-        VmIp: "10.180.250.113",
-        CpuCount: 2,
-        MemoryCount: 4,
+        VmIp: "10.180.250.119",
+        CpuCount: 1,
+        MemoryCount: 2,
         Image: "ubuntu",
         Vlan: "govirtmgmt",
     }
@@ -232,7 +287,8 @@ func TestMigrate(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	err = c.Migratehost("sf01-lab-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "createvmtest")
+	//err = c.Migratehost("sf01-lab-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "createvmtest")
+	err = c.Migratehost("sf01-lab-netsrv-2.squaretrade.com", "sf01-lab-1.squaretrade.com", "createvmtest2")
 	if err != nil {
 		panic(err)
 	}

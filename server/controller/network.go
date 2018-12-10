@@ -75,7 +75,7 @@ func (c *Conn) edithost(godhcp string, n govirtlib.PostPayload,overwrite bool) e
 	}
 	return nil
 }
-func (c *Conn) delhost(godhcp string, host string) error {
+func (c *Conn) delhost_network(godhcp string, host string) error {
     method := "DELETE"
 	p := govirtlib.PostPayload{
 		Target: "host",

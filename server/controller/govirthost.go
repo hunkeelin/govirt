@@ -36,7 +36,7 @@ func (c *Conn) Getxml(vm, host string) ([]byte, error) {
 	resp.Body.Close()
 	if resp.StatusCode != 200 {
 		fmt.Println(string(body))
-		return r, errors.New("Failed, check logs on the godhcp server" + host)
+		return r, errors.New("Failed, check logs on the govirthost server" + host)
 	}
 	var tmpr govirtlib.ReturnPayload
 	err = json.Unmarshal(body, &tmpr)
@@ -70,7 +70,7 @@ func (c *Conn) Statevm(state, vm, host string) error {
 	resp.Body.Close()
 	if resp.StatusCode != 200 {
 		fmt.Println(string(body))
-		return errors.New("Failed, check logs on the godhcp server")
+		return errors.New("Failed, check logs on the govirthost server")
 	}
 	return nil
 }
@@ -100,7 +100,7 @@ func (c *Conn) migrate(ori, dest, vm string) error {
 	resp.Body.Close()
 	if resp.StatusCode != 200 {
 		fmt.Println(string(body))
-		return errors.New("Failed, check logs on the godhcp server")
+		return errors.New("Failed, check logs on the govirthost server")
 	}
 	return nil
 }
@@ -130,7 +130,7 @@ func (c *Conn) Getvms(hosts []string) ([]govirtlib.ReturnPayload, error) {
 		resp.Body.Close()
 		if resp.StatusCode != 200 {
 			fmt.Println(string(body))
-			return r, errors.New("Failed, check logs on the godhcp server" + host)
+			return r, errors.New("Failed, check logs on the govirthost server" + host)
 		}
 		var tmpr govirtlib.ReturnPayload
 		err = json.Unmarshal(body, &tmpr)
@@ -167,7 +167,7 @@ func (c *Conn) Define(xml []byte, dest string) error {
 	resp.Body.Close()
 	if resp.StatusCode != 200 {
 		fmt.Println(string(body))
-		return errors.New("Failed, check logs on the godhcp server")
+		return errors.New("Failed, check logs on the govirthost server")
 	}
 	return nil
 }
