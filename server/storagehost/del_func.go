@@ -2,11 +2,17 @@ package storagehost
 
 import (
 	"os"
+    "fmt"
 	"path/filepath"
 )
 
 func (c *Conn) delhost(hostname string) error {
-	return os.Remove(c.StorageLocation + hostname + ".qcow2")
+	err := os.Remove(c.StorageLocation + hostname + ".qcow2")
+    if err != nil {
+        fmt.Println("error while removing")
+        return err
+    }
+    return nil
 }
 func (c *Conn) deltemplate(template string) error {
 	matches, err := filepath.Glob(c.StorageLocation + template + "*" + c.TemplateRegex)
