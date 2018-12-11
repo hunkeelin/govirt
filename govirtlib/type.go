@@ -38,8 +38,9 @@ type StrgInfo struct {
 	Size     int    `json:"size"`
 }
 type GetPayload struct {
-	Target string `json:"target"` // whether you are targeting vm or the host
-	Domain string `json:"domain"`
+	Target  string `json:"target"` // whether you are targeting vm or the host
+	Domain  string `json:"domain"`
+	Cluster string `json:"cluster"`
 }
 type Network struct { // for godhcp
 	Subnet   string   `json:"subnet"`
